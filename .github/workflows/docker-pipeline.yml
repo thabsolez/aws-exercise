@@ -58,7 +58,7 @@ jobs:
       CONTAINER_NAME: "devsecops"
 
     steps:
-      - name: Checkout Code Mutuwa code
+      - name: Checkout Code Thabz code
         uses: actions/checkout@v2
 
       - name: Build Thabiso Django Docker Image
