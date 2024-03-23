@@ -61,7 +61,7 @@ jobs:
       - name: Checkout Code Mutuwa code
         uses: actions/checkout@v2
 
-      - name: Build Noble Django Docker Image
+      - name: Build Thabiso Django Docker Image
         run: |
           docker build -t ${registry}/${DOCKERHUB_USERNAME}/${imagename}:${imageTag} .
 
