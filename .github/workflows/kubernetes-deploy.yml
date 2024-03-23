@@ -1,0 +1,130 @@
+name: Docker CICD
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+
+  codeql_scan:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: python
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:python"
+
+  build_docker_image:
+    needs: codeql_scan
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME}}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      imagename: 'devsecops_github'
+      registry: 'docker.io'
+      imageTag: 'latest'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ${registry}/${DOCKERHUB_USERNAME}/${imagename}:${imageTag} .
+          echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+          docker push ${registry}/${DOCKERHUB_USERNAME}/${imagename}:${imageTag}
+
+  trivy_scan:
+    needs: build_docker_image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Install Trivy
+        run: |
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.18.3/trivy_0.18.3_Linux-64bit.deb
+          sudo dpkg -i trivy_0.18.3_Linux-64bit.deb
+
+      - name: Scan Docker Image
+        run: |
+          trivy_report=$(trivy --format json docker.io/mutuwa12/devsecops_github:latest)
+          echo "$trivy_report"
+
+          # # Check if there are any vulnerabilities with severity "CRITICAL"
+          # if echo "$trivy_report" | jq '.[0].Vulnerabilities[] | select(.Severity == "CRITICAL")' > /dev/null; then
+          #   echo "Critical vulnerabilities found. Failing the workflow."
+          #   exit 1
+          # else
+          #   echo "No critical vulnerabilities found. Proceeding with the workflow."
+  #         fi   
+          
+  deploy_to_eks:
+    needs: trivy_scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install aws-cli
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_DEFAULT_REGION }}
+
+      - name: Update kubeconfig with EKS cluster credentials
+        run: |
+          aws eks --region ${{ secrets.AWS_DEFAULT_REGION }} update-kubeconfig --name ingresscluster
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: Mutuwa99/DevSecOps_project.git
+          ref: main
+
+      - name: List files in checked out repository
+        run: |
+          ls -al
+
+      - name: Scale down deployment
+        run: |
+          kubectl scale deployment python-app --replicas=0
+
+      - name: Apply updated deployment
+        run: |
+          kubectl apply -f deployment.yml
+
+
+
+
+
+
+
+
+
+
+
+
+
+

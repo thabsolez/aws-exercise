@@ -1,0 +1,28 @@
+
+*******CI/CD WITH GITHUB ACTIONS*****
+
+---componrts
+1.Source code: php, python,
+2.Repo: github
+3.version control: git 
+4.QodeQL: SAST- scans your code for bugs,code smell,vul.....
+5. docker : package the application 
+6.Trivy: checks for vulnerabilits on our docker image /app image
+9. Server: deploy the image/container/application.
+
+
+
+----run book-------
+
+1. create a server and install docker on it
+2.Source of the app  and repo.
+-----Dockerfile: package the app into an docker image
+----- github-actions script that will define the cicd pipepline , tools ans steps/stages of the pipeline 
+----- docker hub: repository for  for storing docker image
+------configure our servers details and our docker hub details on github using secrets 
+
+        =======   servers IP ADREES
+        ========= SERVER USER
+        ======== DOCKER USERNAME
+        ========= DOCKERHUB PASS
+        =-===== m

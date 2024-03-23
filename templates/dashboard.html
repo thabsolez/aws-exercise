@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    /* Basic styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+      height: 100%;
+      width: 250px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #333;
+      padding-top: 20px;
+    }
+
+    .sidebar a {
+      padding: 10px;
+      text-decoration: none;
+      color: #fff;
+      display: block;
+    }
+
+    .sidebar a:hover {
+      background-color: #555;
+    }
+
+    /* Content styles */
+    .content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    /* Navbar styles */
+    .navbar {
+      background-color: #444;
+      color: #fff;
+      padding: 10px;
+      position: fixed;
+      top: 0;
+      width: 100%;
+    }
+
+    /* Main content area */
+    .main-content {
+      margin-top: 60px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background-color: #f9f9f9;
+      border-radius: 50px;
+      width:600px;
+      padding: 20px;
+      margin: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .card i {
+      font-size: 48px;
+      color: #777;
+    }
+
+    .card h2 {
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    .card p {
+      color: #555;
+    }
+
+    /* Responsive styles */
+    @media screen and (max-width: 600px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      .sidebar a {float: left;}
+      div.content {margin-left: 0;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <a href="#">Dashboard</a>
+  <a href="#">Analytics</a>
+  <a href="#">Reports</a>
+  <a href="#">Settings</a>
+</div>
+
+<div class="content">
+  <div class="navbar">
+    <span>Welcome, User</span>
+    <span style="float:right"><a href="#"><i class="fas fa-user"></i> Logout</a></span>
+  </div>
+
+  <div class="main-content">
+    <div class="card">
+      <i class="fas fa-users"></i>
+      <h2>Total Users</h2>
+      <p>{{ number }}</p>
+    </div>
+
+    <div class="card">
+      <i class="fas fa-chart-line"></i>
+      <h2>Male users</h2>
+      <p>$50,000</p>
+    </div>
+
+    <div class="card">
+      <i class="fas fa-shopping-cart"></i>
+      <h2>Female users</h2>
+      <p>200</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
