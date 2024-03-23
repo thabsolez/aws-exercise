@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKERHUB_USERNAME: ${{ secrets.FIRST_DOCKER_NAME}}
+      FIRST_DOCKER_NAME: ${{ secrets.FIRST_DOCKER_NAME}}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASS }}
       imagename: "devsecops_github"
       registry: "docker.io"
@@ -63,12 +63,12 @@ jobs:
 
       - name: Build Noble Django Docker Image
         run: |
-          docker build -t ${registry}/${DOCKERHUB_USERNAME}/${imagename}:${imageTag} .
+          docker build -t ${registry}/${FIRST_DOCKER_NAME}/${imagename}:${imageTag} .
 
       - name: Push Docker Image to Docker Hub
         run: |
-          echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
-          docker push ${registry}/${DOCKERHUB_USERNAME}/${imagename}:${imageTag}
+          echo "${DOCKERHUB_PASSWORD}" | docker login -u "${FIRST_DOCKER_NAME}" --password-stdin
+          docker push ${registry}/${FIRST_DOCKER_NAME}/${imagename}:${imageTag}
 
   trivy_scan:
     needs: build_docker_image
